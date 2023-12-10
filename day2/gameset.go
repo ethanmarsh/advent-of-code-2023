@@ -1,4 +1,4 @@
-package gameset
+package main
 
 import (
 	"bufio"
@@ -20,9 +20,7 @@ func (gameset GameSet) String() string {
 	return fmt.Sprintf("%s", gameset.games)
 }
 
-func New(filename string) GameSet {
-	fmt.Println("Parsing GameSet")
-
+func NewGameSet(filename string) GameSet {
 	file, err := os.Open(filename)
 	check(err)
 	defer file.Close()
@@ -34,8 +32,8 @@ func New(filename string) GameSet {
 	}
 
 	games := make([]Game, len(lines))
-	for _, line := range lines {
-		games = append(games, NewGame(line))
+	for i, line := range lines {
+		games[i] = NewGame(line)
 	}
 
 	gameset := GameSet{games}

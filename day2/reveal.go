@@ -1,4 +1,4 @@
-package gameset
+package main
 
 import (
 	"fmt"
@@ -14,14 +14,15 @@ func (reveal Reveal) String() string {
 }
 
 func NewReveal(dice string) Reveal {
-	fmt.Println("Parsing Reveal from: " + dice)
+	// fmt.Println("    Parsing Reveal from: " + dice)
 
 	diceStrings := strings.Split(dice, ", ")
 	diceSlices := make([]Dice, len(diceStrings))
-	for _, diceString := range diceStrings {
-		diceSlices = append(diceSlices, NewDice(diceString))
+	for i, diceString := range diceStrings {
+		diceSlices[i] = NewDice(diceString)
 	}
 
 	reveal := Reveal{diceSlices}
+	// fmt.Println("    Parsed Reveal: " + reveal.String())
 	return reveal
 }

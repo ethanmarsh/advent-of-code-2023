@@ -1,6 +1,4 @@
-package gameset
-
-import "fmt"
+package main
 
 type DiceColor int
 
@@ -19,8 +17,6 @@ func (color DiceColor) EnumIndex() int {
 }
 
 func NewDiceColor(str string) DiceColor {
-	fmt.Println("Parsing DiceColor from: " + str)
-
 	switch str {
 	case "red":
 		return Red

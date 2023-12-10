@@ -1,4 +1,4 @@
-package gameset
+package main
 
 import (
 	"fmt"
@@ -16,7 +16,7 @@ func (dice Dice) String() string {
 }
 
 func NewDice(diceString string) Dice {
-	fmt.Println("Parsing Dice roll from: " + diceString)
+	// fmt.Println("      Parsing Dice roll from: " + diceString)
 
 	numberString, colorString, found := strings.Cut(diceString, " ")
 	if !found {
@@ -30,5 +30,8 @@ func NewDice(diceString string) Dice {
 
 	color := NewDiceColor(colorString)
 
-	return Dice{number, color}
+	// fmt.Println("        Parsed DiceColor: " + color.String())
+	dice := Dice{number, color}
+	// fmt.Println("      Parsed Dice: " + dice.String())
+	return dice
 }

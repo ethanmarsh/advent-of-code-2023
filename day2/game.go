@@ -1,4 +1,4 @@
-package gameset
+package main
 
 import (
 	"fmt"
@@ -27,15 +27,15 @@ func NewGame(line string) Game {
 	if !foundId || err != nil {
 		panic("error parsing game id")
 	}
-	fmt.Println(fmt.Sprintf("Parsed ID: %d", gameid))
 
 	revealSlices := strings.Split(revealline, "; ")
 
 	reveals := make([]Reveal, len(revealSlices))
-	for _, revealStr := range revealSlices {
-		reveals = append(reveals, NewReveal(revealStr))
+	for i, revealStr := range revealSlices {
+		reveals[i] = NewReveal(revealStr)
 	}
 
 	game := Game{gameid, reveals}
+	fmt.Println("Parsed Game: " + game.String())
 	return game
 }

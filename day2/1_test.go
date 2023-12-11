@@ -18,18 +18,20 @@ func NewTestReveal() Reveal {
 }
 
 func NewTestGame() Game {
-	dice1 := []Dice{
-		{9, Red},
-		{1, Green},
-		{5, Blue},
-	}
-	reveal1 := Reveal{dice1}
-	dice2 := []Dice{
-		{17, Red},
+	// Game 1
+	reveal11 := Reveal{[]Dice{
 		{3, Blue},
-	}
-	reveal2 := Reveal{dice2}
-	reveals := []Reveal{reveal1, reveal2}
+		{4, Red},
+	}}
+	reveal12 := Reveal{[]Dice{
+		{1, Red},
+		{2, Green},
+		{6, Blue},
+	}}
+	reveal13 := Reveal{[]Dice{
+		{2, Green},
+	}}
+	reveals := []Reveal{reveal11, reveal12, reveal13}
 	return Game{1, reveals}
 }
 
@@ -173,5 +175,29 @@ func TestPossibleGames(t *testing.T) {
 
 	if sum != 8 {
 		t.Error("Possible game calculation is wrong")
+	}
+}
+
+func TestMinimumDice(t *testing.T) {
+	testGame := NewTestGame()
+	expectedBag := Bag{Dice{4, Red}, Dice{2, Green}, Dice{6, Blue}}
+	if testGame.MinimumDice() != expectedBag {
+		t.Error("Minimum bag calculation is wrong")
+	}
+}
+
+func TestPower(t *testing.T) {
+	testGame := NewTestGame()
+	expectedPower := 48
+	if testGame.MinimumDice().Power() != expectedPower {
+		t.Error("Minimum bag power calculation is wrong")
+	}
+}
+
+func TestPowerSum(t *testing.T) {
+	testGameSet := NewTestGameSet()
+	expectedPowerSum := 2286
+	if testGameSet.SumOfMinimumBagPower() != expectedPowerSum {
+		t.Error("Sum of minimum bag power calculation is wrong")
 	}
 }

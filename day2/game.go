@@ -62,3 +62,12 @@ func (game Game) IsPossible(bag Bag) bool {
 		return r.IsPossible(bag)
 	})
 }
+
+func (game Game) MinimumDice() Bag {
+	minimumAll := EmptyBag()
+	for _, reveal := range game.reveals {
+		minimumAll = minimumAll.CombineMax(reveal.MinimumDice())
+	}
+
+	return minimumAll
+}

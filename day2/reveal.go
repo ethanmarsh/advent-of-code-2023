@@ -61,3 +61,27 @@ func (reveal Reveal) IsPossible(bag Bag) bool {
 
 	return true
 }
+
+func (reveal Reveal) MinimumDice() Bag {
+	red := 0
+	green := 0
+	blue := 0
+	for _, dice := range reveal.diceSet {
+		switch dice.color {
+		case Red:
+			if dice.number > red {
+				red = dice.number
+			}
+		case Green:
+			if dice.number > green {
+				green = dice.number
+			}
+		case Blue:
+			if dice.number > blue {
+				blue = dice.number
+			}
+		}
+	}
+
+	return Bag{Dice{red, Red}, Dice{green, Green}, Dice{blue, Blue}}
+}

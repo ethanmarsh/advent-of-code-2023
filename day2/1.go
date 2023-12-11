@@ -17,5 +17,6 @@ func main() {
 		sum += game.id
 	}
 
-	fmt.Printf("Sum: %d\n", sum)
+	fmt.Printf("Part 1 Sum: %d\n", sum)
+	fmt.Printf("Part 2 Sum: %d\n", gameset.SumOfMinimumBagPower())
 }

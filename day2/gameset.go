@@ -59,3 +59,11 @@ func (gameset GameSet) PossibleGames(bag Bag) []Game {
 		return g.IsPossible(bag)
 	})
 }
+
+func (gameset GameSet) SumOfMinimumBagPower() int {
+	sum := 0
+	for _, game := range gameset.games {
+		sum += game.MinimumDice().Power()
+	}
+	return sum
+}

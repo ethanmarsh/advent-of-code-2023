@@ -39,3 +39,23 @@ func NewGameSet(filename string) GameSet {
 	gameset := GameSet{games}
 	return gameset
 }
+
+func (lhs GameSet) Equal(rhs GameSet) bool {
+	if len(lhs.games) != len(rhs.games) {
+		return false
+	}
+	for i, lGame := range lhs.games {
+		rGame := rhs.games[i]
+		if !lGame.Equal(rGame) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func (gameset GameSet) PossibleGames(bag Bag) []Game {
+	return Filter(gameset.games, func(g Game) bool {
+		return g.IsPossible(bag)
+	})
+}

@@ -5,34 +5,17 @@ import (
 )
 
 func main() {
-	fmt.Println("Begin Day2ls Part 1")
-	gameset := NewGameSet("test-input.txt")
+	fmt.Println("Begin Day2 Part 1")
+	gameset := NewGameSet("puzzle-input.txt")
 	fmt.Println("--------------------")
-	fmt.Println(gameset)
 
-	test1 := NewDiceColor("red")
-	test2 := NewDiceColor("red")
-	if test1 == test2 {
-		fmt.Println("DiceColor equality is working")
-	} else {
-		fmt.Println("DiceColor equality is NOT working")
-	}
-}
+	bag := Bag{Dice{12, Red}, Dice{13, Green}, Dice{14, Blue}}
+	possibleGames := gameset.PossibleGames(bag)
 
-func Map[T, V any](ts []T, fn func(T) V) []V {
-	result := make([]V, len(ts))
-	for i, t := range ts {
-		result[i] = fn(t)
+	sum := 0
+	for _, game := range possibleGames {
+		sum += game.id
 	}
-	return result
-}
 
-func Filter[T any](ts []T, fn func(T) bool) []T {
-	result := make([]T, 0)
-	for _, t := range ts {
-		if fn(t) {
-			result = append(result, t)
-		}
-	}
-	return result
+	fmt.Printf("Sum: %d\n", sum)
 }

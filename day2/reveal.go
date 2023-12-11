@@ -26,3 +26,38 @@ func NewReveal(dice string) Reveal {
 	// fmt.Println("    Parsed Reveal: " + reveal.String())
 	return reveal
 }
+
+func (lhs Reveal) Equal(rhs Reveal) bool {
+	if len(lhs.diceSet) != len(rhs.diceSet) {
+		return false
+	}
+	for i, lDice := range lhs.diceSet {
+		rDice := rhs.diceSet[i]
+		if lDice != rDice {
+			return false
+		}
+	}
+
+	return true
+}
+
+func (reveal Reveal) IsPossible(bag Bag) bool {
+	for _, dice := range reveal.diceSet {
+		switch dice.color {
+		case Red:
+			if dice.number > bag.red.number {
+				return false
+			}
+		case Green:
+			if dice.number > bag.green.number {
+				return false
+			}
+		case Blue:
+			if dice.number > bag.blue.number {
+				return false
+			}
+		}
+	}
+
+	return true
+}

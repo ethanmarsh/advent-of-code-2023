@@ -4,7 +4,7 @@ import "strconv"
 
 func IsSymbol(char string) bool {
 	switch char {
-	case "!", "@", "#", "$", "%", "^", "&", "*", "(", ")":
+	case "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "+", "-", "=", "/":
 		return true
 	default:
 		return false

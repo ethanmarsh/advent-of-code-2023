@@ -3,12 +3,17 @@ package engine
 import (
 	"errors"
 	"fmt"
+	"slices"
+	"strconv"
 )
 
 type NumberIndex struct {
-	number     string
-	startIndex int
-	endIndex   int
+	number string
+	coord  Coordinate
+}
+
+func (numberIndex NumberIndex) String() string {
+	return fmt.Sprintf("%s at %s", numberIndex.number, numberIndex.coord.String())
 }
 
 type schematic = [][]string
@@ -16,6 +21,10 @@ type schematic = [][]string
 type Coordinate struct {
 	x int
 	y int
+}
+
+func (coord Coordinate) String() string {
+	return fmt.Sprintf("(%d,%d)", coord.x, coord.y)
 }
 
 func charAt(sch schematic, coord Coordinate) (string, error) {
@@ -40,7 +49,7 @@ func findNumberBeginning(sch schematic, coord Coordinate) NumberIndex {
 	// fmt.Printf("Find Number Beginning - Coord:%d,%d\n", coord.x, coord.y)
 	char, err := charAt(sch, coord)
 	if err != nil || !IsDigit(char) {
-		return NumberIndex{"", coord.x + 1, 0}
+		return NumberIndex{"", Coordinate{coord.x, coord.y + 1}}
 	}
 
 	result := findNumberBeginning(sch, Coordinate{coord.x, coord.y - 1}).combine(char)
@@ -52,7 +61,7 @@ func findNumberEnd(sch schematic, coord Coordinate) NumberIndex {
 	// fmt.Printf("Find Number End - Coord:%d,%d\n", coord.x, coord.y)
 	char, err := charAt(sch, coord)
 	if err != nil || !IsDigit(char) {
-		return NumberIndex{"", 0, coord.x - 1}
+		return NumberIndex{"", Coordinate{coord.x, coord.y - 1}}
 	}
 
 	result := combine(char, findNumberEnd(sch, Coordinate{coord.x, coord.y + 1}))
@@ -62,16 +71,21 @@ func findNumberEnd(sch schematic, coord Coordinate) NumberIndex {
 
 func findFullNumber(sch schematic, coord Coordinate) NumberIndex {
 	// fmt.Printf("Find Full Number - Coord:%d,%d\n", coord.x, coord.y)
+	char, err := charAt(sch, coord)
+	if err != nil || !IsDigit(char) {
+		return NumberIndex{"", Coordinate{}}
+	}
+
 	beginning := findNumberBeginning(sch, Coordinate{coord.x, coord.y - 1})
 	end := findNumberEnd(sch, Coordinate{coord.x, coord.y + 1})
 	combined := beginning.number + char + end.number
-	combinedNumberIndex := NumberIndex{combined, beginning.startIndex, end.endIndex}
+	combinedNumberIndex := NumberIndex{combined, beginning.coord}
 	// fmt.Println("Combined: " + combined)
 	return combinedNumberIndex
 }
 
-func findAdjacentDigit(sch schematic, coord Coordinate) []int {
-	fmt.Printf("Find Adjacent Digit - Coord:%d,%d\n", coord.x, coord.y)
+func findAdjacentDigit(sch schematic, coord Coordinate) []NumberIndex {
+	// fmt.Println("Find Adjacent Digit - Coord: " + coord.String())
 
 	var adjacentNumbers []NumberIndex
 	start := coord.x - 1
@@ -88,7 +102,7 @@ func findAdjacentDigit(sch schematic, coord Coordinate) []int {
 			if IsDigit(char) {
 				// find full number
 				fullNumberStr := findFullNumber(sch, newCoord)
-				fmt.Printf("Found full number %s\n", fullNumberStr)
+				fmt.Println("Found full number " + fullNumberStr.String())
 				adjacentNumbers = append(adjacentNumbers, fullNumberStr)
 			}
 		}
@@ -96,24 +110,41 @@ func findAdjacentDigit(sch schematic, coord Coordinate) []int {
 	return adjacentNumbers
 }
 
-func sum(array []int) int {
+func removeDuplicates(array []NumberIndex) []NumberIndex {
+	// fmt.Printf("STARTING ARRAY: %v\n", array)
+	var result []NumberIndex
+	for _, numberIndex := range array {
+		if !slices.Contains(result, numberIndex) {
+			result = append(result, numberIndex)
+		}
+	}
+	// fmt.Printf("DEDUPED ARRAY: %v\n", result)
+	return result
+}
+
+func sum(array []NumberIndex) int {
 	var sum int
 	for _, num := range array {
-		sum += num
+		convertedNum, error := strconv.Atoi(num.number)
+		if error != nil {
+			panic("bad conversion")
+		}
+		sum += convertedNum
 	}
 	return sum
 }
 
 func NewEngine(sch schematic) int {
-	var alladjacentNumbers []int
+	var allAdjacentNumbers []NumberIndex
 	for i, line := range sch {
 		for j, character := range line {
 			if IsSymbol(character) {
-				fmt.Printf("Found symbol %s\n", character)
+				// fmt.Printf("Found symbol %s\n", character)
 				numbers := findAdjacentDigit(sch, Coordinate{i, j})
-				alladjacentNumbers = append(alladjacentNumbers, numbers...)
+				allAdjacentNumbers = append(allAdjacentNumbers, numbers...)
 			}
 		}
 	}
-	return sum(alladjacentNumbers)
+
+	return sum(removeDuplicates(allAdjacentNumbers))
 }

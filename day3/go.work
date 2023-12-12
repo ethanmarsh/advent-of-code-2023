@@ -1,0 +1,7 @@
+go 1.21.5
+
+use (
+	.
+	./internal/engine
+	./internal/filereader
+)

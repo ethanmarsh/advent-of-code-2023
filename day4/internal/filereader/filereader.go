@@ -3,7 +3,6 @@ package filereader
 import (
 	"bufio"
 	"os"
-	"strings"
 )
 
 func check(e error) {
@@ -12,7 +11,7 @@ func check(e error) {
 	}
 }
 
-func ReadFile(filename string) [][]string {
+func ReadFile(filename string) []string {
 	file, err := os.Open(filename)
 	check(err)
 	defer file.Close()
@@ -23,11 +22,5 @@ func ReadFile(filename string) [][]string {
 		lines = append(lines, scanner.Text())
 	}
 
-	var splitLines [][]string
-	for _, line := range lines {
-		splitLine := strings.Split(line, "")
-		splitLines = append(splitLines, splitLine)
-	}
-
-	return splitLines
+	return lines
 }

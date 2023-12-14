@@ -2,6 +2,7 @@ package cardset
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 )
@@ -18,9 +19,13 @@ func NewCard(line string) Card {
 		panic("Can't parse card id")
 	}
 
-	id, foundId := strings.CutPrefix(prefix, "Card ")
-	cardid, err := strconv.Atoi(id)
-	if !foundId || err != nil {
+	prefixSlice := strings.Fields(prefix)
+	if len(prefixSlice) != 2 {
+		panic("Expected prefix slices to 'Card' and an int")
+	}
+	cardid, err := strconv.Atoi(prefixSlice[1])
+	if err != nil {
+		fmt.Println("Bad Card Id: " + prefix)
 		panic("error parsing card id")
 	}
 
@@ -39,7 +44,7 @@ func (card Card) String() string {
 	return fmt.Sprintf("Card %d: %v | %v", card.id, card.winningNumbers, card.ownedNumbers)
 }
 
-func (lhs Card) Equal(rhs Card) bool {
+func (lhs Card) Equals(rhs Card) bool {
 	if lhs.id != rhs.id {
 		return false
 	}
@@ -81,4 +86,32 @@ func check(e error) {
 	if e != nil {
 		panic(e)
 	}
+}
+
+func (card Card) Points() int {
+	numMatches := len(card.GetMatches())
+	if numMatches == 0 {
+		return 0
+	}
+	return int(math.Pow(2, float64(numMatches-1)))
+}
+
+func (card Card) GetMatches() []int {
+	var matches []int
+	for _, owned := range card.ownedNumbers {
+		if intSliceContains(card.winningNumbers, owned) {
+			matches = append(matches, owned)
+		}
+	}
+	return matches
+}
+
+func intSliceContains(slice []int, num int) bool {
+	for _, x := range slice {
+		if x == num {
+			return true
+		}
+	}
+
+	return false
 }

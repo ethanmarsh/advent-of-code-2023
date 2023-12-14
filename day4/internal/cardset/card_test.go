@@ -6,15 +6,15 @@ import (
 )
 
 func createTestCard() Card {
-	return Card{1, []int{1, 2}, []int{2, 3}}
+	return Card{1, []int{1, 2}, []int{2, 3}, 1}
 }
 
 func createTestCard2() Card {
-	return Card{2, []int{3, 4}, []int{5, 4, 6, 3}}
+	return Card{2, []int{3, 4}, []int{5, 4, 6, 3}, 1}
 }
 
 func createTestCard3() Card {
-	return Card{3, []int{7, 8, 9, 10, 11}, []int{11, 8, 10, 7}}
+	return Card{3, []int{7, 8, 9, 10, 11}, []int{11, 8, 10, 7}, 1}
 }
 
 func createTestCardString() string {
@@ -56,6 +56,17 @@ func TestFindMatches(t *testing.T) {
 	}
 }
 
+func TestNumMatches(t *testing.T) {
+	testCard := createTestCard3()
+	expectedNumMatches := 4
+	actualNumMatches := testCard.NumMatches()
+	if expectedNumMatches != actualNumMatches {
+		fmt.Printf("Expected num matches: %d\n", expectedNumMatches)
+		fmt.Printf("Actual num matches: %d\n", actualNumMatches)
+		t.Error("Expected num matches do not match actual num matches")
+	}
+}
+
 func TestPoints(t *testing.T) {
 	testCard := createTestCard3()
 	expectedPoints := 8
@@ -68,7 +79,7 @@ func TestPoints(t *testing.T) {
 }
 
 func TestPointsNoMatches(t *testing.T) {
-	testCard := Card{1, []int{1, 2}, []int{3, 4}}
+	testCard := Card{1, []int{1, 2}, []int{3, 4}, 1}
 	expectedPoints := 0
 	actualPoints := testCard.Points()
 	if expectedPoints != actualPoints {

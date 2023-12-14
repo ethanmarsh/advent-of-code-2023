@@ -11,6 +11,7 @@ type Card struct {
 	id             int
 	winningNumbers []int
 	ownedNumbers   []int
+	numCopies      int
 }
 
 func NewCard(line string) Card {
@@ -37,7 +38,7 @@ func NewCard(line string) Card {
 	winningNumbersSlices := strings.Fields(winningNumbersStr)
 	ownedNumbersSlices := strings.Fields(ownedNumbersStr)
 
-	return Card{cardid, stringSliceToIntSlice(winningNumbersSlices), stringSliceToIntSlice(ownedNumbersSlices)}
+	return Card{cardid, stringSliceToIntSlice(winningNumbersSlices), stringSliceToIntSlice(ownedNumbersSlices), 1}
 }
 
 func (card Card) String() string {
@@ -49,6 +50,10 @@ func (lhs Card) Equals(rhs Card) bool {
 		return false
 	}
 
+	if lhs.numCopies != rhs.numCopies {
+		return false
+	}
+
 	if len(lhs.winningNumbers) != len(rhs.winningNumbers) {
 		return false
 	}
@@ -57,13 +62,13 @@ func (lhs Card) Equals(rhs Card) bool {
 		return false
 	}
 
-	for x, _ := range lhs.winningNumbers {
+	for x := range lhs.winningNumbers {
 		if lhs.winningNumbers[x] != rhs.winningNumbers[x] {
 			return false
 		}
 	}
 
-	for x, _ := range lhs.ownedNumbers {
+	for x := range lhs.ownedNumbers {
 		if lhs.ownedNumbers[x] != rhs.ownedNumbers[x] {
 			return false
 		}
@@ -96,6 +101,10 @@ func (card Card) Points() int {
 	return int(math.Pow(2, float64(numMatches-1)))
 }
 
+func (card Card) NumMatches() int {
+	return len(card.GetMatches())
+}
+
 func (card Card) GetMatches() []int {
 	var matches []int
 	for _, owned := range card.ownedNumbers {
@@ -104,6 +113,10 @@ func (card Card) GetMatches() []int {
 		}
 	}
 	return matches
+}
+
+func (card *Card) AddCopies(copies int) {
+	card.numCopies += copies
 }
 
 func intSliceContains(slice []int, num int) bool {

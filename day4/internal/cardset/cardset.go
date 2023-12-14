@@ -44,3 +44,22 @@ func (cardset Cardset) Points() int {
 	}
 	return sum
 }
+
+func (cardset Cardset) TotalCards() int {
+	totalCards := 0
+	for x, card := range cardset.cards {
+		// add num copies of current card
+		totalCards += card.numCopies
+
+		// calculate num copies of subsequent cards
+		numMatches := card.NumMatches()
+		if numMatches > 0 {
+			for i := x + 1; i <= x+numMatches; i++ {
+				if i < len(cardset.cards) {
+					cardset.cards[i].AddCopies(card.numCopies)
+				}
+			}
+		}
+	}
+	return totalCards
+}

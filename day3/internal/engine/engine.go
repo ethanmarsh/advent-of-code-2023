@@ -134,6 +134,16 @@ func sum(array []NumberIndex) int {
 	return sum
 }
 
+func GearRatio(first NumberIndex, second NumberIndex) int {
+	firstInt, err1 := strconv.Atoi(first.number)
+	secondInt, err2 := strconv.Atoi(second.number)
+	if err1 != nil || err2 != nil {
+		panic("Bad conversion")
+	}
+
+	return firstInt * secondInt
+}
+
 func NewEngine(sch schematic) int {
 	var allAdjacentNumbers []NumberIndex
 	for i, line := range sch {
@@ -147,4 +157,23 @@ func NewEngine(sch schematic) int {
 	}
 
 	return sum(removeDuplicates(allAdjacentNumbers))
+}
+
+func GetGearSum(sch schematic) int {
+	var sum = 0
+	for i, line := range sch {
+		for j, character := range line {
+			if IsGear(character) {
+				fmt.Printf("Found gear %s\n", character)
+				numbers := findAdjacentDigit(sch, Coordinate{i, j})
+				numbers = removeDuplicates(numbers)
+				if len(numbers) == 2 {
+					gearRatio := GearRatio(numbers[0], numbers[1])
+					sum += gearRatio
+				}
+			}
+		}
+	}
+
+	return sum
 }

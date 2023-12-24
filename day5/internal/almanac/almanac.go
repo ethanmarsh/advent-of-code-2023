@@ -2,13 +2,13 @@ package almanac
 
 type Almanac struct {
 	seeds                  []int
-	seedToSoil             []Map
-	soilToFertilizers      []Map
-	fertilizerToWaters     []Map
-	waterToLights          []Map
-	lightToTemperatures    []Map
-	temperatureToHumiditys []Map
-	humidityToLocations    []Map
+	seedToSoil             MapSet
+	soilToFertilizers      MapSet
+	fertilizerToWaters     MapSet
+	waterToLights          MapSet
+	lightToTemperatures    MapSet
+	temperatureToHumiditys MapSet
+	humidityToLocations    MapSet
 }
 
 func (lhs Almanac) Equals(rhs Almanac) bool {
@@ -73,4 +73,23 @@ func NewAlmanac(lines []string) Almanac {
 	}
 
 	return almanac
+}
+
+func (almanac Almanac) GetSeedLocations() []int {
+	var locations []int
+	for _, seed := range almanac.seeds {
+		soil := almanac.seedToSoil.GetMappedValue(seed)
+		fertilizer := almanac.soilToFertilizers.GetMappedValue(soil)
+		water := almanac.fertilizerToWaters.GetMappedValue(fertilizer)
+		light := almanac.waterToLights.GetMappedValue(water)
+		temp := almanac.lightToTemperatures.GetMappedValue(light)
+		humidity := almanac.temperatureToHumiditys.GetMappedValue(temp)
+		location := almanac.humidityToLocations.GetMappedValue(humidity)
+		locations = append(locations, location)
+	}
+	return locations
+}
+
+func (almanac Almanac) GetLowestSeedLocation() int {
+	return GetMinimum(almanac.GetSeedLocations())
 }

@@ -13,6 +13,31 @@ type Map struct {
 	rangeLength           int
 }
 
+type MapSet []Map
+
+func (daMap Map) IsValueInRange(value int) bool {
+	return value >= daMap.sourceRangeStart && value < daMap.sourceRangeStart+daMap.rangeLength
+}
+
+func (daMap Map) GetMappedValue(value int) int {
+	if daMap.IsValueInRange(value) {
+		difference := value - daMap.sourceRangeStart
+		return daMap.destinationRangeStart + difference
+	} else {
+		return value
+	}
+}
+
+func (mapset MapSet) GetMappedValue(value int) int {
+	for _, daMap := range mapset {
+		if daMap.IsValueInRange(value) {
+			return daMap.GetMappedValue(value)
+		}
+	}
+
+	return value
+}
+
 func (daMap Map) String() string {
 	return fmt.Sprintf("Dest: %d, Source: %d, Length: %d\n", daMap.destinationRangeStart, daMap.sourceRangeStart, daMap.rangeLength)
 }

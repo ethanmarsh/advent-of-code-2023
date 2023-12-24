@@ -18,3 +18,13 @@ func CheckError(err error) {
 		panic(err)
 	}
 }
+
+func GetMinimum(values []int) int {
+	var minimum = values[0]
+	for _, value := range values {
+		if value < minimum {
+			minimum = value
+		}
+	}
+	return minimum
+}

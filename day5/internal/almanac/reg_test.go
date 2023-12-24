@@ -34,3 +34,33 @@ func TestParseMap(t *testing.T) {
 		t.Error("expected maps does not equal actual parsed maps")
 	}
 }
+
+func TestMappedValueOutsideRange(t *testing.T) {
+	daMap := Map{50, 98, 2}
+	startValue := 49
+	expectedValue := startValue
+	actualValue := daMap.GetMappedValue(startValue)
+	if expectedValue != actualValue {
+		t.Error("Expected mapped value does not equal actual mapped value")
+	}
+}
+
+func TestMappedValueInsideRange(t *testing.T) {
+	daMap := Map{52, 50, 48}
+	startValue := 79
+	expectedValue := 81
+	actualValue := daMap.GetMappedValue(startValue)
+	if expectedValue != actualValue {
+		t.Error("Expected mapped value does not equal actual mapped value")
+	}
+}
+
+func TestMapSetValueInsideRange(t *testing.T) {
+	mapset := MapSet{Map{50, 98, 2}, Map{52, 50, 48}}
+	startValue := 79
+	expectedValue := 81
+	actualValue := mapset.GetMappedValue(startValue)
+	if expectedValue != actualValue {
+		t.Error("Expected mapset value does not equal actual mapset value")
+	}
+}
